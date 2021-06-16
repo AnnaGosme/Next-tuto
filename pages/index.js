@@ -3,7 +3,7 @@ import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-export default function Home({ posts }) {
+export default function Home({ posts, date }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -18,7 +18,9 @@ export default function Home({ posts }) {
       <Head>
         <title>Mon blog</title>
       </Head>
-      <h1>Count: {count}</h1>
+      <h1>
+        Count: {count} - {date}
+      </h1>
       <ul>
         {posts.map((post) => (
           <li>
@@ -47,7 +49,7 @@ export default function Home({ posts }) {
 //     },
 //   };
 // }
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const posts = await fetch(
     "https://jsonplaceholder.typicode.com/posts?_limit=4"
   ).then((res) => res.json());
@@ -55,6 +57,8 @@ export async function getServerSideProps() {
   return {
     props: {
       posts,
+      date: new Date().toString(),
     },
+    revalidate: 5,
   };
 }
